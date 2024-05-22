@@ -1,64 +1,58 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { userService } from '../services/service.service';
 
-import { Service } from "../services/service.service";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
-  public form: FormGroup;
-  loginData = {
-    emailid: "",
-    password: ""
-  }
-  loginId: any;
-  errorMsg: string;
-  loader = false;
+  form: FormGroup;
+  errorMsg: string = '';
+  loader: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private Service: Service,
+    private service: userService,
   ) { }
 
   ngOnInit() {
     this.form = this.fb.group({
-      uname: [null, Validators.compose([Validators.required])],
-      password: [null, Validators.compose([Validators.required])]
+      emailid: [null, Validators.required],
+      password: [null, Validators.required]
     });
   }
-  //login
-  login() { 
-    this.loader = true;
-    let data = {
-      "username": this.loginData.emailid,
-      "password": this.loginData.password,
+
+  login() {
+    if (this.form.invalid) {
+      this.errorMsg = 'Please fill in all required fields';
+      return;
     }
-    this.Service.postMethod('adminlogin', JSON.stringify(data))
-      .subscribe((response => {
-        if (response.error == false) {
-          console.log("finally",response);
-          this.loginId = response.data.UserId;
-          localStorage.setItem('loginId', this.loginId);
-          localStorage.setItem('access_token', response.data.token);
-          this.loader = false;
-          this.router.navigate(['/dashboard/users']);
-        }
-        else {
-          this.loader = false;
-          this.errorMsg = response.message;
-        }
-      }),
-        (error) => {
-          this.loader = false;
-          console.log(error);
-        }
-      )
 
+    this.loader = true;
+    const loginData = this.form.value;
+
+    this.service.postMethod('adminlogin', JSON.stringify(loginData))
+      .subscribe({
+        next: (response) => {
+          if (!response.error) {
+            console.log("finally", response);
+            localStorage.setItem('loginId', response.data.UserId);
+            localStorage.setItem('access_token', response.data.token);
+            this.router.navigate(['/dashboard/users']);
+          } else {
+            this.errorMsg = response.message;
+          }
+          this.loader = false;
+        },
+        error: (error) => {
+          this.errorMsg = 'An error occurred during login. Please try again later.';
+          console.error(error);
+          this.loader = false;
+        }
+      });
   }
-
 }

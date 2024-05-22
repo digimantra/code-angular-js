@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 // ES6 Modules or TypeScript
 import Swal from 'sweetalert2'
-import { Service } from "../services/service.service";
+import { userService } from "../services/service.service";
 
 
 @Component({
@@ -32,17 +32,11 @@ export class UsersComponent implements OnInit {
   selectedStatus = 'All';
   loader = true;
 
-  constructor(
-    private Service: Service,
+  constructor(private userService: userService) { }
 
-  ) { 
+  ngOnInit(): void {
     this.getData();
-
   }
-
-  ngOnInit() {
-  }
- 
   //Delete user
   deleteUser(userId , name) {
     Swal.fire({
@@ -56,7 +50,7 @@ export class UsersComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.loader = true; 
-        this.Service.deleteMethod('users/delete/'+ userId).subscribe(response => {
+        this.userService.deleteMethod('users/delete/'+ userId).subscribe(response => {
           console.log(response);
           if (response.error == false) {
             console.log(response.data);
@@ -81,7 +75,7 @@ export class UsersComponent implements OnInit {
     // pages = 1
     // status = all
     // search = ''
-    this.Service.getMethod('users?page=1&status=all&search=')
+    this.userService.getMethod('users?page=1&status=all&search=')
     .subscribe((response => {
       if (response.error == false) {
         this.userList = response.data;
@@ -121,7 +115,7 @@ export class UsersComponent implements OnInit {
    }else{
       this.searchVal = '';
    } 
-    this.Service.getMethod('users?page=' + this.pageVal + '&status=' + this.changeStatusVal + '&search=' + this.searchVal)
+    this.userService.getMethod('users?page=' + this.pageVal + '&status=' + this.changeStatusVal + '&search=' + this.searchVal)
     .subscribe((response => {
       if (response.error == false) {
         this.userList = response.data;
@@ -163,7 +157,7 @@ export class UsersComponent implements OnInit {
     //search value
     this.searchVal = event.target.value;
 
-    this.Service.getMethod('users?page=' + '1' + '&status=' + this.changeStatusVal + '&search='+ this.searchVal)
+    this.userService.getMethod('users?page=' + '1' + '&status=' + this.changeStatusVal + '&search='+ this.searchVal)
     .subscribe((response => {
       if (response.error == false) {
         this.userList = response.data;
@@ -212,7 +206,7 @@ export class UsersComponent implements OnInit {
         this.searchVal = '';
     } 
     this.loader = true; 
-    this.Service.getMethod('users?page=' + '1'
+    this.userService.getMethod('users?page=' + '1'
     + '&status=' + this.changeStatusVal + '&search=' + this.searchVal)
     .subscribe((response => {
       if (response.error == false) {
@@ -264,7 +258,7 @@ export class UsersComponent implements OnInit {
       confirmButtonText: 'Yes'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.Service.putMethod('users/update/status/'+ userid, JSON.stringify(data))
+        this.userService.putMethod('users/update/status/'+ userid, JSON.stringify(data))
     .subscribe((response => {
       if (response.error == false) {
         this.loader = false; 

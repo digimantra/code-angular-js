@@ -13,26 +13,24 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 
 
 const routes: Routes = [
-
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'users' },
-      { path: 'users', component: UsersComponent,canActivate: [AuthGuard] }, 
-      { path: 'add-user', component: AddUserComponent,canActivate: [AuthGuard] }, 
-      { path: 'view-user/:id', component: ViewUserComponent,canActivate: [AuthGuard] }, 
-      { path: 'edit-user/:id', component: EditUserComponent,canActivate: [AuthGuard] }, 
-      { path: 'change-password', component: ChangePasswordComponent,canActivate: [AuthGuard] }, 
-      
-
+      { path: 'users', component: UsersComponent }, 
+      { path: 'add-user', component: AddUserComponent }, 
+      { path: 'view-user/:id', component: ViewUserComponent }, 
+      { path: 'edit-user/:id', component: EditUserComponent }, 
+      { path: 'change-password', component: ChangePasswordComponent }, 
     ]
   },
-
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-
-import { Service } from "../services/service.service";
-import Swal from 'sweetalert2'
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { userService } from '../services/service.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -12,42 +10,29 @@ import Swal from 'sweetalert2'
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  
-  public form: FormGroup;
-  firstName: string;
-  lastName: string;
-  emailId: string;
-  password: string;
-  contactNumber: number;
-  loginId = localStorage.getItem('loginId');
-  repassword:string;
-  isCheked:boolean =false;
-  message ="Password Did Not Match";
-  errorMsg:string;
-  gender: any;
+  form: FormGroup;
   loader = false;
-
-  show: boolean = false;
-  repeatshow: boolean = false;
+  show = false;
+  repeatshow = false;
+  errorMsg = '';
+  message = "Password Did Not Match";
+  isCheked = false;
 
   constructor(
     private router: Router,
-    private Service: Service,
+    private service: userService,
     private fb: FormBuilder
-
   ) { }
 
   ngOnInit() {
-    this.password = '';
     this.form = this.fb.group({
-      fname: [null, Validators.compose([Validators.required, Validators.minLength(3),Validators.pattern('^[a-zA-Z ]*$') ])],
-      lname: [null, Validators.compose([Validators.required, Validators.minLength(3),Validators.pattern('^[a-zA-Z ]*$') ])],
-      emailid: [null, Validators.compose([Validators.required, Validators.email,Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')])],
-      password: [null, Validators.compose([Validators.required, Validators.minLength(6)])],
-      rpassword: [null, Validators.compose([Validators.required, Validators.minLength(6)])],   
-      Contactnumber: [null, Validators.compose([Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")])],
+      fname: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]*$')]],
+      lname: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]*$')]],
+      emailid: ['', [Validators.required, Validators.email, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      rpassword: ['', [Validators.required, Validators.minLength(6)]],
+      contactnumber: ['', [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
       gender: ['', Validators.required]
-
     });
   }
 
@@ -58,69 +43,47 @@ export class RegisterComponent implements OnInit {
   repeatpasswords() {
     this.repeatshow = !this.repeatshow;
   }
-  passwordMatch(){
-    
-    if(this.password === this.repassword){
-      this.isCheked = false;
-    }
-    else {
-      this.isCheked = true;
-      this.errorMsg = this.message;
-    }
-    
-  }
 
-  chooseGender(){
-    console.log(this.gender);    
-  }
-
-  onClick() {
-    if (this.password === 'password') {
-      this.password = 'text';
-      this.show = true;
-    } else {
-      this.password = 'password';
-      this.show = false;
-    }
+  passwordMatch() {
+    const password = this.form.get('password')?.value;
+    const rpassword = this.form.get('rpassword')?.value;
+    
+    this.isCheked = password !== rpassword;
+    this.errorMsg = this.isCheked ? this.message : '';
   }
 
   addUser() {
-    this.loader = true; 
-    let data = {
-      "fname": this.firstName,
-      "lname": this.lastName,
-      "emailid": this.emailId,
-      "password": this.password,
-      "contactno": this.contactNumber,
-      "createdby": "1",
-      "parentid":"0",
-      "relationship":"self",
-      "gender":this.gender
-    }
+    this.loader = true;
+    const formData = this.form.value;
+    const data = {
+      fname: formData.fname,
+      lname: formData.lname,
+      emailid: formData.emailid,
+      password: formData.password,
+      contactno: formData.contactnumber,
+      createdby: "1",
+      parentid: "0",
+      relationship: "self",
+      gender: formData.gender
+    };
 
-    this.Service.postMethod('users/create', JSON.stringify(data))
-      .subscribe((response => {
-        if (response.error == false) {
-          var message = response.data.fname + ' ' + response.data.lname + ' has been added successfully';
-          Swal.fire(
-            message,
-            'success'
-          ) 
-          this.loader = false; 
-          this.router.navigate(['/dashboard/users']);
-        }else{
-          Swal.fire(
-            response.message,
-            'error'
-          ) 
+    this.service.postMethod('users/create', JSON.stringify(data))
+      .subscribe({
+        next: (response) => {
+          if (!response.error) {
+            const message = `${response.data.fname} ${response.data.lname} has been added successfully`;
+            Swal.fire('Success', message, 'success');
+            this.router.navigate(['/dashboard/users']);
+          } else {
+            Swal.fire('Error', response.message, 'error');
+          }
+          this.loader = false;
+        },
+        error: (error) => {
+          console.error('Error:', error);
+          Swal.fire('Error', 'An error occurred. Please try again later.', 'error');
           this.loader = false;
         }
-      }),
-        (error) => {
-          this.loader = false; 
-          console.log(error);
-        }
-      )
+      });
   }
-
 }

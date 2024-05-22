@@ -10,17 +10,16 @@
           </div>
           <div class="card-header">
             <strong class="card-title">Users</strong>
-            <button class="btn btn-primary" style="float: right;" routerLink="/dashboard/add-user" type="submit">Add Users</button>
-            <div class="col col-sm-3" style="float: right;"><input type="text" [(ngModel)]="query" placeholder="Search..." class="form-control" (keyup)="searchFilter($event)"></div>
-            <div class="col col-sm-3" style="float: right;">
+            <button class="btn btn-primary float-right" routerLink="/dashboard/add-user" type="button">Add Users</button>
+            <div class="col col-sm-3 float-right"><input type="text" [(ngModel)]="query" placeholder="Search..." class="form-control" (keyup)="searchFilter($event)"></div>
+            <div class="col col-sm-3 float-right">
               <select class="form-control" name="status"  [(ngModel)]="selectedStatus" (ngModelChange)="changeUserStatus($event)">
                 <option *ngFor="let item of status" [ngValue]="item">{{item}}</option>
               </select>
             </div>
-                
           </div>
           <div class="card-body">
-            <div class="table-responsive ">
+            <div class="table-responsive">
               <table class="table">
                 <thead>
                   <tr>
@@ -28,56 +27,35 @@
                     <th scope="col">Last Name</th>
                     <th scope="col">Email Id</th>
                     <th scope="col">Contact Number</th>
-                    <!-- <th scope="col">Status</th> -->
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
-                    <tbody *ngFor="
-                    let list of userList
-                      | paginate
-                        : {
-                            itemsPerPage: itemsPerPage,
-                            currentPage: page,
-                            totalItems: totalItems
-                          }
-                  ">
-                    
+                <tbody *ngFor="let list of userList | paginate: { itemsPerPage: itemsPerPage, currentPage: page, totalItems: totalItems }">
                   <tr>
                     <td>{{list.fname}}</td>
                     <td>{{list.lname}}</td>
                     <td>{{list.emailid}}</td>
                     <td>{{list.contactno}}</td>
-                    <!-- <td *ngIf='list.ustatus == "0"'>Approved</td>
-                    <td *ngIf='list.ustatus == "1"'>Pending</td>  
-                    <td *ngIf='list.ustatus == "2"'>Rejected</td>   -->
-
                     <td>
-                      <button class="btn btn-default"  type="button" (click)="updateUserStatus(list.ustatus,list.id)">
-                        <div *ngIf='list.ustatus == "0"'>Active</div>
-                        <div *ngIf='list.ustatus == "1"'>In-active</div>  
-                        <div *ngIf='list.ustatus == "2"'>Rejected</div>  
+                      <button class="btn btn-default" type="button" (click)="updateUserStatus(list.ustatus,list.id)">
+                        <div *ngIf="list.ustatus == '0'">Active</div>
+                        <div *ngIf="list.ustatus == '1'">In-active</div>
+                        <div *ngIf="list.ustatus == '2'">Rejected</div>
                       </button>
                     </td>
                     <td>
-                      <i class="fas fa-eye" routerLink="/dashboard/view-user/{{list.id}}" aria-hidden="true" style="font-size: large;cursor: pointer;"
-                        title="view"></i>
-                        <i class="fas fa-pencil-alt" routerLink="/dashboard/edit-user/{{list.id}}" aria-hidden="true" style="font-size: large;cursor: pointer;margin-left: 10px;"
-                        title="Edit"></i>
-                        <i class="fas fa-trash" (click)="deleteUser(list.id,list.fname)" aria-hidden="true" style="font-size: large;cursor: pointer;margin-left: 10px;"
-                        title="Delete"></i>
+                      <i class="fas fa-eye" [routerLink]="'/dashboard/view-user/' + list.id" aria-hidden="true" style="font-size: large; cursor: pointer;" title="View"></i>
+                      <i class="fas fa-pencil-alt" [routerLink]="'/dashboard/edit-user/' + list.id" aria-hidden="true" style="font-size: large; cursor: pointer; margin-left: 10px;" title="Edit"></i>
+                      <i class="fas fa-trash" (click)="deleteUser(list.id,list.fname)" aria-hidden="true" style="font-size: large; cursor: pointer; margin-left: 10px;" title="Delete"></i>
                     </td>
                   </tr>
-
                 </tbody>
               </table>
-              <div style="text-align: center;">
+              <div class="text-center">
                 <span *ngIf="showError" style="color: red; font-size: 11px">{{errorMsg}}</span>
               </div>
-              <pagination-controls
-                class="pagi" *ngIf="userList.length > 0"
-                (pageChange)="getPageData((page = $event))" style="float: right;"
-              ></pagination-controls>
+              <pagination-controls class="pagi" *ngIf="userList.length > 0" (pageChange)="getPageData(page = $event)" style="float: right;"></pagination-controls>
             </div>
           </div>
         </div>

@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Routes, RouterModule, Router, ActivatedRoute } from "@angular/router";
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-
-import { Service } from "../services/service.service";
-
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { userService } from "../services/service.service";
 
 @Component({
   selector: 'app-view-user',
@@ -14,103 +11,90 @@ import { Service } from "../services/service.service";
 export class ViewUserComponent implements OnInit {
   
   public form: FormGroup;
-  userId = this.route.snapshot.params['id'];
-  loginId = localStorage.getItem('loginId');
-  userList: Array<any> = [];
+  userId: string;
+  loginId: string;
+  userList: any;
   showError: boolean;
   errorMsg: string;
-  firstName:string;
+  firstName: string;
   lastName: string;
   emailId: string;
   contactNumber: number;
-  relationName:string;
-  depfirstName:string;
-  deplastName: string;
-  depemailId: string;
-  depcontactNumber: number;
-  password:string
+  relationName: string;
+  depFirstName: string;
+  depLastName: string;
+  depEmailId: string;
+  depContactNumber: number;
+  password: string;
   userStatus: any;
-  loader =true;
-
-
+  loader: boolean = true;
 
   constructor(
     public route: ActivatedRoute,
     private router: Router,
-    private Service: Service,
-    private fb: FormBuilder,
-
-  ) { 
-    this.getData();
-
-  }
+    private service: userService,
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit() {
+    this.userId = this.route.snapshot.params['id'];
+    this.loginId = localStorage.getItem('loginId');
     this.form = this.fb.group({
-      depfirstname: [null, Validators.compose([Validators.required])],
-      deplastname: [null, Validators.compose([Validators.required])],
-      depemailid: [null, Validators.compose([Validators.required])],
-      password: [null, Validators.compose([Validators.required])],
-      relationname: [null, Validators.compose([Validators.required])],   
-      Contactnumber: [null, Validators.compose([Validators.required])],
-
-    })
+      depFirstName: [null, Validators.required],
+      depLastName: [null, Validators.required],
+      depEmailId: [null, Validators.required],
+      password: [null, Validators.required],
+      relationName: [null, Validators.required],   
+      depContactNumber: [null, Validators.required]
+    });
+    this.getData();
   }
 
-  chooseRealtionShip(){
+  chooseRelationShip() {
     console.log(this.relationName);    
   }
+
   getData() {
     this.loader = true; 
-
-    this.Service.getMethod('users/get/'+ this.userId).subscribe(response => {
+    this.service.getMethod(`users/get/${this.userId}`).subscribe(response => {
       console.log(response);
       if (response.error == false) {
         this.userList = response.data;
-        this.firstName = this.userList[0].fname;
-        this.lastName = this.userList[0].lname;
-        this.emailId = this.userList[0].emailid;
-        this.contactNumber = this.userList[0].contactno;
-        this.userStatus = this.userList[0].ustatus;
-        // this.showError = false;
-        console.log(this.userList);
+        const user = this.userList[0];
+        this.firstName = user.fname;
+        this.lastName = user.lname;
+        this.emailId = user.emailid;
+        this.contactNumber = user.contactno;
+        this.userStatus = user.ustatus;
         this.loader = false; 
-      } 
-      else {
-        this.loader = false; 
+      } else {
         this.showError = true;
         this.errorMsg = response.message;
+        this.loader = false; 
       }
     });
   }
 
   addRelUser() {
-
     this.loader = true; 
-
-    let data = {
-      "fname": this.depfirstName,
-      "lname": this.deplastName,
-      "emailid": this.depemailId,
+    const data = {
+      "fname": this.depFirstName,
+      "lname": this.depLastName,
+      "emailid": this.depEmailId,
       "password": this.password,
-      "contactno": this.depcontactNumber,
+      "contactno": this.depContactNumber,
       "createdby": this.loginId,
-      "parentid":this.userId,
-    }
-
-    this.Service.postMethod('users/create', JSON.stringify(data))
-      .subscribe((response => {
-        console.log(response);
+      "parentid": this.userId,
+    };
+    this.service.postMethod('users/create', JSON.stringify(data))
+      .subscribe((response) => {
         if (response.error == false) { 
-            this.loader = false; 
+          this.loader = false; 
           this.router.navigate(['/dashboard/users']);
         }
-      }),
-        (error) => {
-          this.loader = false; 
-          console.log(error);
-        }
-      )
+      }, (error) => {
+        this.loader = false; 
+        console.log(error);
+      });
   }
-
 }

@@ -1,16 +1,71 @@
-.loading-spinner{    
-    background-color: #0000001f;
+/* Spinner styles */
+.loading-spinner {
+    background-color: rgba(0, 0, 0, 0.12); /* Improved background color */
     position: absolute;
     width: 100%;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     height: 100%;
+    display: flex; /* Changed to flex for better alignment support */
     align-items: center;
     justify-content: center;
-    display: grid;
     z-index: 9;
 }
-.loading-message{
+
+.loading-spinner img {
+    width: 50px; /* Ensure the loader image is not too large */
+    height: 50px;
+}
+
+/* Loading message styles */
+.loading-message {
     text-align: center;
-    align-self: start;
+    align-self: center; /* Center align the message */
+    font-size: 1.5em; /* Larger font size for better visibility */
+    margin-top: 20px; /* Added margin for spacing */
+}
+
+/* Form field error messages */
+.support-text {
+    font-size: 0.875em; /* Slightly smaller font size for error messages */
+}
+
+/* General form styles */
+.form-group {
+    margin-bottom: 1.5em; /* Increased spacing between form groups */
+}
+
+.form-control {
+    border-radius: 4px; /* Slightly rounded corners for input fields */
+    padding: 0.75em; /* More padding for better readability */
+}
+
+.form-control:focus {
+    border-color: #007bff; /* Highlight the input field on focus */
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Add a subtle shadow */
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 0.75em 1.5em;
+    font-size: 1.25em; /* Increased font size for buttons */
+    border-radius: 4px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darken the button on hover */
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    padding: 0.75em 1.5em;
+    font-size: 1.25em;
+    border-radius: 4px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
 }

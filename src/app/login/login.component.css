@@ -1,16 +1,23 @@
-.loading-spinner{    
-    background-color: #0000001f;
+.loading-spinner {
+    background-color: rgba(0, 0, 0, 0.12); /* Changed to rgba for better readability */
     position: absolute;
     width: 100%;
-    top: 0px;
-    left: 0px;
     height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
     align-items: center;
     justify-content: center;
-    display: grid;
     z-index: 9;
 }
-.loading-message{
+
+.loading-spinner img {
+    width: 50px; /* Ensure spinner size is consistent */
+    height: 50px;
+}
+
+.loading-message {
     text-align: center;
-    align-self: start;
+    margin-top: 20px; /* Adjusted for better spacing */
+    font-size: 1.2em; /* Increased font size for readability */
 }

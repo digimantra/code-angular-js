@@ -1,36 +1,50 @@
 <body style="padding-top: 80px;">
   <div class="splash-container">
-    <div class="card ">
+    <div class="card">
       <div class="progress-loader" *ngIf="loader">
         <div class="loading-spinner">
-            <img src="assets/images/loader.svg">
+          <img src="assets/images/loader.svg" alt="Loading...">
         </div>
       </div>
       <div class="card-header text-center">
         <a><span class="loading-message">Login</span></a>
       </div>
       <div class="card-body">
-        <form>
+        <form [formGroup]="form" (ngSubmit)="login()">
           <div class="form-group">
-            <input class="form-control form-control-lg" id="username" type="email" [(ngModel)]="loginData.emailid"
-              [formControl]="form.controls['uname']" placeholder="Email Id" autocomplete="off">
-            <small *ngIf="form.controls['uname'].hasError('required') && form.controls['uname'].touched"
-              class="text-danger support-text">Email Id is required.</small>
+            <input
+              class="form-control form-control-lg"
+              id="emailid"
+              type="email"
+              formControlName="emailid"
+              placeholder="Email Id"
+              autocomplete="off"
+            >
+            <small *ngIf="form.controls['emailid'].hasError('required') && form.controls['emailid'].touched" class="text-danger support-text">
+              Email Id is required.
+            </small>
           </div>
           <div class="form-group">
-            <input class="form-control form-control-lg" id="password" type="password" [(ngModel)]="loginData.password"
-              [formControl]="form.controls['password']" placeholder="Password">
-            <small *ngIf="form.controls['password'].hasError('required') && form.controls['password'].touched"
-              class="text-danger support-text">Password is required.</small>
+            <input
+              class="form-control form-control-lg"
+              id="password"
+              type="password"
+              formControlName="password"
+              placeholder="Password"
+            >
+            <small *ngIf="form.controls['password'].hasError('required') && form.controls['password'].touched" class="text-danger support-text">
+              Password is required.
+            </small>
           </div>
-
-            <button type="submit" [disabled]="!form.valid" (click)="login()" class="btn btn-primary btn-lg btn-block">Sign
-            in</button>
-            <button routerLink="/register" class="btn btn-primary btn-lg btn-block">Register</button>
-
+          <button type="submit" [disabled]="!form.valid" class="btn btn-primary btn-lg btn-block">
+            Sign in
+          </button>
+          <button routerLink="/register" class="btn btn-secondary btn-lg btn-block">
+            Register
+          </button>
+          <div *ngIf="errorMsg" class="alert alert-danger mt-2">{{ errorMsg }}</div>
         </form>
       </div>
-
     </div>
   </div>
 </body>

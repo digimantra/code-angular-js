@@ -1,0 +1,44 @@
+/* This is app.component.css */
+
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Header styles */
+  .header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+  }
+  
+  /* Footer styles */
+  .footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  /* Main content styles */
+  .content {
+    padding: 20px;
+  }
+  
+  /* Sidebar styles */
+  .sidebar {
+    background-color: #f4f4f4;
+    width: 200px;
+    float: left;
+    height: 100%;
+  }
+  
+  /* Main section styles */
+  .main-section {
+    margin-left: 220px; /* Adjust based on sidebar width */
+  }
+  
