@@ -1,20 +1,24 @@
 <div class="dashboard-main-wrapper">
   <div class="dashboard-header">
+    <!-- Navigation bar -->
     <nav class="navbar navbar-expand-lg bg-white fixed-top">
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse " id="navbarSupportedContent">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto navbar-right-top">
-
+          <!-- User dropdown menu -->
           <li class="nav-item dropdown nav-user">
             <a class="nav-link nav-user-img" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false"><img src="assets/images/user_image.png" alt=""
-                class="user-avatar-md rounded-circle"></a>
+              aria-expanded="false">
+              <img src="assets/images/user_image.png" alt="" class="user-avatar-md rounded-circle">
+            </a>
             <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
+              <!-- Change Password -->
               <!-- <a class="dropdown-item" style="cursor: pointer;" (click)="changePassword()"><i class="fas fa-power-off mr-2"
                 (click)="changePassword()"></i>Change Password</a> -->
+              <!-- Logout -->
               <a class="dropdown-item" style="cursor: pointer;" (click)="logout()"><i class="fas fa-power-off mr-2"
                   (click)="logout()"></i>Logout</a>
             </div>
@@ -24,5 +28,6 @@
     </nav>
   </div>
 
+  <!-- Router outlet to display routed components -->
   <router-outlet></router-outlet>
 </div>

@@ -5,64 +5,44 @@
         <div class="card">
           <div class="progress-loader" *ngIf="loader">
             <div class="loading-spinner">
-                <img src="assets/images/loader.svg">
+              <img src="assets/images/loader.svg">
             </div>
           </div>
           <h5 class="card-header">Update User</h5>
           <div class="card-body">
             <form>
               <div class="row">
-
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                   <div class="form-group">
                     <label for="fname">First Name</label>
-                    <input id="fname" type="text" [(ngModel)]="firstName" name="fname" data-parsley-trigger="change"
-                      placeholder="Enter First Name" autocomplete="off" class="form-control">
+                    <input id="fname" type="text" [(ngModel)]="firstName" name="fname" placeholder="Enter First Name" autocomplete="off" class="form-control">
                   </div>
                 </div>
-
-                  <!-- <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                    <div class="form-group">
-                      <label for="lname">Last Name</label>
-                        <input id="lname" type="text" [(ngModel)]="lastName" name="lname" data-parsley-trigger="change"
-                          placeholder="Enter Last Name" autocomplete="off" class="form-control">
-                      </div>
-                  </div> -->
-
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                   <div class="form-group">
                     <label for="emailid">Email Id</label>
-                    <input id="emailid" type="email" disabled [(ngModel)]="emailId" name="emailid" data-parsley-trigger="change"
-                      placeholder="Enter Email id" autocomplete="off" class="form-control">
+                    <input id="emailid" type="email" disabled [(ngModel)]="emailId" name="emailid" placeholder="Enter Email id" autocomplete="off" class="form-control">
                   </div>
-                </div>         
-
+                </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                   <div class="form-group">
                     <label for="Contactnumber">Contact Number</label>
-                    <input id="Contactnumber" type="text" [(ngModel)]="contactNumber" maxlength="10"
-                      name="Contactnumber" data-parsley-trigger="change" placeholder="Enter Contact Number"
-                      autocomplete="off" class="form-control">
+                    <input id="Contactnumber" type="text" [(ngModel)]="contactNumber" maxlength="10" name="Contactnumber" placeholder="Enter Contact Number" autocomplete="off" class="form-control">
                   </div>
                 </div>
-
-                  <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                        <div class="form-group">
-                          <label for="rdate">Registration Date</label>
-                          <input id="rdate" type="text" disabled [(ngModel)]="registrationdate" name="rdate" data-parsley-trigger="change"
-                            autocomplete="off" class="form-control">
-                        </div>
-                      </div>
-
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                  <div class="form-group">
+                    <label for="rdate">Registration Date</label>
+                    <input id="rdate" type="text" disabled [(ngModel)]="registrationdate" name="rdate" autocomplete="off" class="form-control">
+                  </div>
+                </div>
               </div>
               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                <button class="btn btn-primary" style="float: right;" (click)="edituser()" type="submit">Update
-                </button>
+                <button class="btn btn-primary" style="float: right;" (click)="edituser()" type="submit">Update</button>
               </div>
             </form>
           </div>
         </div>
-
       </div>
     </div>
   </div>

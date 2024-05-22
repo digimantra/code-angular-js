@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Routes, RouterModule, Router, ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from '@angular/router';
+import { Service } from '../services/service.service';
+import Swal from 'sweetalert2';
 
-import { Service } from "../services/service.service";
-import Swal from 'sweetalert2'
+// Interface for status options
 export interface Status {
   value: string;
   viewValue: string;
@@ -14,47 +15,39 @@ export interface Status {
   styleUrls: ['./edit-user.component.css']
 })
 export class EditUserComponent implements OnInit {
-
-  userId = this.route.snapshot.params['id'];
-  userList: Array<any> = [];
+  userId: string;
+  userList: any[] = [];
   firstName: string;
-   // lastName: string;
-   registrationdate:string;
+  registrationDate: string;
   emailId: string;
   contactNumber: number;
-  // statusType: any;
   loader = true;
-  sdate:Date;
-
-
+  
   constructor(
-    private Service: Service,
+    private service: Service,
     public route: ActivatedRoute,
-    private router: Router,
-
-
+    private router: Router
   ) {
+    this.userId = this.route.snapshot.params['id'];
     this.getData();
-
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   status: Status[] = [
     { value: '0', viewValue: 'Approve' },
     { value: '2', viewValue: 'Reject' },
   ];
-  //get data
+
+  // Fetch user data
   getData() {
     this.loader = true; 
-    this.Service.getMethod('users/get/'+ this.userId).subscribe(response => {
+    this.service.getMethod('users/get/' + this.userId).subscribe(response => {
       console.log(response);
-      if (response.error == false) {
+      if (response.error === false) {
         this.userList = response.data;
         this.firstName = this.userList[0].fname;
-         // this.lastName = this.userList[0].lname;
-         this.registrationdate = this.userList[0].created_at;
+        this.registrationDate = this.userList[0].created_at;
         this.emailId = this.userList[0].emailid;
         this.contactNumber = this.userList[0].contactno;
         this.loader = false;
@@ -62,33 +55,27 @@ export class EditUserComponent implements OnInit {
       }
     });
   }
-  //edit user
-  edituser() {
-    this.loader = true; 
 
+  // Edit user
+  editUser() {
+    this.loader = true; 
     let data = {
       "firstname": this.firstName,
-       // "lastname": this.lastName,
-      "contactnumer": this.contactNumber,
-    }
-    this.Service.putMethod('users/update/' + this.userId, JSON.stringify(data))
-      .subscribe((response => {
+      "contactnumber": this.contactNumber,
+    };
+
+    this.service.putMethod('users/update/' + this.userId, JSON.stringify(data))
+      .subscribe((response) => {
         console.log(response);
-        if (response.error == false) {
-          Swal.fire(
-            response.message,
-            'success'
-          )
+        if (response.error === false) {
+          Swal.fire(response.message, 'success');
           this.loader = false; 
           this.router.navigate(['/dashboard/users']);
         }
-      }),
-        (error) => {
-          this.loader = false; 
-          console.log(error);
-        }
-      )
+      },
+      (error) => {
+        this.loader = false; 
+        console.log(error);
+      });
   }
-
-
 }

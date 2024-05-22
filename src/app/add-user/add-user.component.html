@@ -5,150 +5,114 @@
         <div class="card">
           <div class="progress-loader" *ngIf="loader">
             <div class="loading-spinner">
-                <img src="assets/images/loader.svg">
+              <img src="assets/images/loader.svg" alt="Loading...">
             </div>
           </div>
           <h5 class="card-header">Add User</h5>
           <div class="card-body">
-            <form>
+            <form [formGroup]="form" (ngSubmit)="addUser()">
               <div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                   <div class="form-group">
-                    <label for="fname">First Name</label>
-                    <input id="fname" type="text" [(ngModel)]="firstName" name="fname" data-parsley-trigger="change"
-                      placeholder="Enter First Name" [formControl]="form.controls['fname']" autocomplete="off"
-                      class="form-control">
-                      <small
-                      *ngIf="form.controls['fname'].hasError('required') && form.controls['fname'].touched"
-                      class="text-danger support-text">First Name is required. </small>
-                      <small
-                      *ngIf="form.controls['fname'].hasError('minlength') && form.controls['fname'].touched"
-                      class="text-danger support-text">First Name must be at least 3 characters. </small>
-                      <small
-                      *ngIf="form.controls['fname'].hasError('pattern') && form.controls['fname'].touched"
-                      class="text-danger support-text">First Name should be alphabet.</small>
+                    <label for="firstName">First Name</label>
+                    <input id="firstName" type="text" formControlName="firstName" placeholder="Enter First Name" autocomplete="off" class="form-control">
+                    <small *ngIf="form.get('firstName').touched && form.get('firstName').hasError('required')" class="text-danger support-text">
+                      First Name is required.
+                    </small>
+                    <small *ngIf="form.get('firstName').touched && form.get('firstName').hasError('minlength')" class="text-danger support-text">
+                      First Name must be at least 3 characters.
+                    </small>
+                    <small *ngIf="form.get('firstName').touched && form.get('firstName').hasError('pattern')" class="text-danger support-text">
+                      First Name should be alphabet.
+                    </small>
                   </div>
                 </div>
-
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                   <div class="form-group">
-                    <label for="lname">Last Name</label>
-                    <input id="lname" type="text" [(ngModel)]="lastName" [formControl]="form.controls['lname']" name="lname" data-parsley-trigger="change"
-                      placeholder="Enter Last Name" autocomplete="off" class="form-control">
-                      <small
-                      *ngIf="form.controls['lname'].hasError('required') && form.controls['lname'].touched"
-                      class="text-danger support-text">Last Name is required. </small>
-                      <small
-                      *ngIf="form.controls['lname'].hasError('minlength') && form.controls['lname'].touched"
-                      class="text-danger support-text">Last Name must be at least 3 characters. </small>
-                      <small
-                      *ngIf="form.controls['lname'].hasError('pattern') && form.controls['lname'].touched"
-                      class="text-danger support-text">Last Name should be alphabet.</small>
+                    <label for="lastName">Last Name</label>
+                    <input id="lastName" type="text" formControlName="lastName" placeholder="Enter Last Name" autocomplete="off" class="form-control">
+                    <small *ngIf="form.get('lastName').touched && form.get('lastName').hasError('required')" class="text-danger support-text">
+                      Last Name is required.
+                    </small>
+                    <small *ngIf="form.get('lastName').touched && form.get('lastName').hasError('minlength')" class="text-danger support-text">
+                      Last Name must be at least 3 characters.
+                    </small>
+                    <small *ngIf="form.get('lastName').touched && form.get('lastName').hasError('pattern')" class="text-danger support-text">
+                      Last Name should be alphabet.
+                    </small>
                   </div>
                 </div>
-
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                   <div class="form-group">
-                    <label for="emailid">Email Id</label>
-                    <input id="emailid" type="email" [(ngModel)]="emailId" name="emailid" data-parsley-trigger="change"
-                      placeholder="Enter Email id" [formControl]="form.controls['emailid']" autocomplete="off" class="form-control">
-                      <small
-                      *ngIf="form.controls['emailid'].hasError('required') && form.controls['emailid'].touched"
-                      class="text-danger support-text">Email Id is required. </small>
-
-                      <small
-                      *ngIf="form.controls['emailid'].hasError('email') && form.controls['emailid'].touched"
-                      class="text-danger support-text">Email must be a valid email address.</small>
+                    <label for="emailId">Email Id</label>
+                    <input id="emailId" type="email" formControlName="emailId" placeholder="Enter Email Id" autocomplete="off" class="form-control">
+                    <small *ngIf="form.get('emailId').touched && form.get('emailId').hasError('required')" class="text-danger support-text">
+                      Email Id is required.
+                    </small>
+                    <small *ngIf="form.get('emailId').touched && form.get('emailId').hasError('email')" class="text-danger support-text">
+                      Email must be a valid email address.
+                    </small>
                   </div>
                 </div>
-
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                   <div class="form-group">
-                    <label for="password">Password <span (click)="passwords()"><i class="fa" [ngClass]="{'fa-eye' : show, 'fa-eye-slash': !show}">
-                  </i></span>
-                  </label>
-                    <input id="password" [type]="show ? 'text' : 'password'" [(ngModel)]="password" name="password"
-                      data-parsley-trigger="change" [formControl]="form.controls['password']" placeholder="Enter Password" autocomplete="off"
-                      class="form-control">
-                      <small
-                      *ngIf="form.controls['password'].hasError('required') && form.controls['password'].touched"
-                      class="text-danger support-text">Password is required. </small>
-                      <small
-                      *ngIf="form.controls['password'].hasError('minlength') && form.controls['password'].touched"
-                      class="text-danger support-text">Password must be at least 6 characters.</small>
-
+                    <label for="password">Password <span (click)="togglePasswordVisibility()"><i class="fa" [ngClass]="{'fa-eye': showPassword, 'fa-eye-slash': !showPassword}"></i></span></label>
+                    <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Enter Password" autocomplete="off" class="form-control">
+                    <small *ngIf="form.get('password').touched && form.get('password').hasError('required')" class="text-danger support-text">
+                      Password is required.
+                    </small>
+                    <small *ngIf="form.get('password').touched && form.get('password').hasError('minlength')" class="text-danger support-text">
+                      Password must be at least 6 characters.
+                    </small>
                   </div>
                 </div>
-
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                   <div class="form-group">
-                    <label for="repeatpassword">Repeat Password <span (click)="repeatpasswords()"><i class="fa" [ngClass]="{'fa-eye' : repeatshow, 'fa-eye-slash': !repeatshow}">
-                    </i></span></label>
-                    <input id="repeatpassword" [type]="repeatshow ? 'text' : 'password'" (change)="passwordMatch()" [(ngModel)]="repassword" name="repeatpassword"
-                      data-parsley-trigger="change" [formControl]="form.controls['rpassword']" placeholder="Enter Repeat Password" autocomplete="off"
-                      class="form-control">
-                      <small
-                      *ngIf="form.controls['rpassword'].hasError('required') && form.controls['rpassword'].touched"
-                      class="text-danger support-text">Repeat Password is required. </small>
-                      <div style="text-align: center;" *ngIf="isCheked">
-                        <span style="color: red; font-size: 11px">{{errorMsg}}</span>
-                      </div>
+                    <label for="repeatPassword">Repeat Password <span (click)="toggleRepeatPasswordVisibility()"><i class="fa" [ngClass]="{'fa-eye': showRepeatPassword, 'fa-eye-slash': !showRepeatPassword}"></i></span></label>
+                    <input id="repeatPassword" [type]="showRepeatPassword ? 'text' : 'password'" formControlName="repeatPassword" placeholder="Enter Repeat Password" autocomplete="off" class="form-control" (input)="checkPasswordMatch()">
+                    <small *ngIf="form.get('repeatPassword').touched && form.get('repeatPassword').hasError('required')" class="text-danger support-text">
+                      Repeat Password is required.
+                    </small>
+                    <div style="text-align: center;" *ngIf="isPasswordMismatch">
+                      <span style="color: red; font-size: 11px">{{ errorMsg }}</span>
+                    </div>
                   </div>
                 </div>
-
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                   <div class="form-group">
-                    <label for="Contactnumber">Contact Number</label>
-                    <input id="Contactnumber" type="text" [(ngModel)]="contactNumber"  minlength=10 maxlength="10"
-                      name="Contactnumber" data-parsley-trigger="change" [formControl]="form.controls['Contactnumber']" placeholder="Enter Contact Number"
-                      autocomplete="off" class="form-control">
-                      <small
-                      *ngIf="form.controls['Contactnumber'].hasError('required') && form.controls['Contactnumber'].touched"
-                      class="text-danger support-text">Contact Number is required. </small>
-
-                      <!-- <small
-                      *ngIf="form.controls['Contactnumber'].hasError('minlength') && form.controls['Contactnumber'].touched"
-                      class="text-danger support-text">Contact Number must be at 10 numbers</small> -->
-
-                      <!-- <small
-                      *ngIf="form.controls['Contactnumber'].hasError('maxlength') && form.controls['Contactnumber'].touched"
-                      class="text-danger support-text">Contact Number be at 10 numbers</small> -->
-
-                      <small
-                      *ngIf="form.controls['Contactnumber'].hasError('pattern') && form.controls['Contactnumber'].touched"
-                      class="text-danger support-text">Invalid contact number.</small>
-
+                    <label for="contactNumber">Contact Number</label>
+                    <input id="contactNumber" type="text" formControlName="contactNumber" minlength="10" maxlength="10" placeholder="Enter Contact Number" autocomplete="off" class="form-control">
+                    <small *ngIf="form.get('contactNumber').touched && form.get('contactNumber').hasError('required')" class="text-danger support-text">
+                      Contact Number is required.
+                    </small>
+                    <small *ngIf="form.get('contactNumber').touched && form.get('contactNumber').hasError('pattern')" class="text-danger support-text">
+                      Invalid contact number.
+                    </small>
                   </div>
                 </div>
-
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                  <div class="form-group" (change)="chooseGender()" >
-                    <label for="Contactnumber">Gender</label>
-                    <label class="custom-control custom-radio custom-control-inline"  style="margin-left: 10px;">
-                      <input type="radio" [(ngModel)]="gender" [value]="0" name="gender" class="custom-control-input" [formControl]="form.controls['gender']"><span class="custom-control-label">Male</span>
-                  </label>  
-                  
-                  <label class="custom-control custom-radio custom-control-inline"  style="margin-left: 10px;">
-                    <input type="radio" [(ngModel)]="gender" [value]="1"   name="gender" class="custom-control-input" [formControl]="form.controls['gender']"><span class="custom-control-label">Female</span>
-                </label>
-                
-                <small
-                      *ngIf="form.controls['gender'].hasError('required') && form.controls['gender'].touched"
-                      class="text-danger support-text">First Name is required. </small>
-                            
+                  <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <div (change)="chooseGender()">
+                      <label class="custom-control custom-radio custom-control-inline" style="margin-left: 10px;">
+                        <input type="radio" formControlName="gender" value="0" class="custom-control-input"><span class="custom-control-label">Male</span>
+                      </label>
+                      <label class="custom-control custom-radio custom-control-inline" style="margin-left: 10px;">
+                        <input type="radio" formControlName="gender" value="1" class="custom-control-input"><span class="custom-control-label">Female</span>
+                      </label>
+                    </div>
+                    <small *ngIf="form.get('gender').touched && form.get('gender').hasError('required')" class="text-danger support-text">
+                      Gender is required.
+                    </small>
                   </div>
+                </div>
               </div>
-
-              </div>
-              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ">
-                <button class="btn btn-primary" style="float: right;" [disabled]="!form.valid" (click)="addUser()" type="submit">Submit
-                </button>
+              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <button class="btn btn-primary" style="float: right;" [disabled]="!form.valid" type="submit">Submit</button>
               </div>
             </form>
           </div>
-
         </div>
-
       </div>
     </div>
   </div>

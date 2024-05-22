@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-
-import { Service } from "../services/service.service";
-import Swal from 'sweetalert2'
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Service } from '../services/service.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-change-password',
@@ -12,96 +10,73 @@ import Swal from 'sweetalert2'
   styleUrls: ['./change-password.component.css']
 })
 export class ChangePasswordComponent implements OnInit {
-  
   public form: FormGroup;
-  oldPassword: string;
-  password: string;
-  repassword:string;
-  loginId = localStorage.getItem('loginId');
-  isCheked:boolean =false;
-  message ="Password Did Not Match";
-  errorMsg:string;
-  loader = false;
-  show: boolean = false;
-  repeatshow: boolean = false;
+  public oldPassword: string;
+  public password: string;
+  public repassword: string;
+  public isCheked = false;
+  public message = 'Password Did Not Match';
+  public errorMsg: string;
+  public loader = false;
+  public show = false;
+  public repeatshow = false;
+  private loginId = localStorage.getItem('loginId');
 
   constructor(
     private router: Router,
-    private Service: Service,
-    private fb: FormBuilder,
-
+    private service: Service,
+    private fb: FormBuilder
   ) { }
 
-  ngOnInit() {
-    this.password = '';
+  ngOnInit(): void {
     this.form = this.fb.group({
-      opassword: [null, Validators.compose([Validators.required])],
-      password: [null, Validators.compose([Validators.required])],
-      rpassword: [null, Validators.compose([Validators.required])], 
-
+      opassword: [null, Validators.required],
+      password: [null, Validators.compose([Validators.required, Validators.minLength(6)])],
+      rpassword: [null, Validators.compose([Validators.required, Validators.minLength(6)])]
     });
   }
 
-  passwords() {
+  togglePasswordVisibility(): void {
     this.show = !this.show;
   }
 
-  repeatpasswords() {
+  toggleRepeatPasswordVisibility(): void {
     this.repeatshow = !this.repeatshow;
   }
-  passwordMatch(){
-    
-    if(this.password === this.repassword){
-      this.isCheked = false;
-    }
-    else {
-      this.isCheked = true;
+
+  passwordMatch(): void {
+    this.isCheked = this.password !== this.repassword;
+    if (this.isCheked) {
       this.errorMsg = this.message;
     }
-    
   }
 
-  onClick() {
-    if (this.password === 'password') {
-      this.password = 'text';
-      this.show = true;
-    } else {
-      this.password = 'password';
-      this.show = false;
-    }
-  }
-  //change password
-  changePassword() {
-    this.loader = true; 
-    let data = {
-      "oldpassword": this.oldPassword,
-      "newpassword": this.password,
-      "userid": this.loginId,
+  changePassword(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
     }
 
-    this.Service.postMethod('users/change/password', JSON.stringify(data))
-      .subscribe((response => {
-        if (response.error == false) {
-          var message = response.data.fname + ' ' + response.data.lname + ' has been added successfully';
-          Swal.fire(
-            response.message,
-            'success'
-          ) 
-          this.loader = false; 
+    this.loader = true;
+    const data = {
+      oldpassword: this.oldPassword,
+      newpassword: this.password,
+      userid: this.loginId
+    };
+
+    this.service.postMethod('users/change/password', JSON.stringify(data))
+      .subscribe(response => {
+        this.loader = false;
+        if (!response.error) {
+          Swal.fire('Success', response.message, 'success');
           this.router.navigate(['/dashboard/users']);
-        }else{
-          Swal.fire(
-            response.message,
-            'error'
-          ) 
-          this.loader = false; 
+        } else {
+          Swal.fire('Error', response.message, 'error');
         }
-      }),
-        (error) => {
-          this.loader = false; 
-          console.log(error);
-        }
-      )
+      }, error => {
+        this.loader = false;
+        console.error(error);
+        Swal.fire('Error', 'An unexpected error occurred. Please try again later.', 'error');
+      });
   }
-
 }

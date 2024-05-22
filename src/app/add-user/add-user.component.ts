@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Service } from "../services/service.service";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-user',
@@ -11,113 +10,85 @@ import Swal from 'sweetalert2'
   styleUrls: ['./add-user.component.css']
 })
 export class AddUserComponent implements OnInit {
-  
+
   public form: FormGroup;
-  firstName: string;
-  lastName: string;
-  emailId: string;
-  password: string;
-  contactNumber: number;
   loginId = localStorage.getItem('loginId');
-  repassword:string;
-  isCheked:boolean =false;
-  message ="Password Did Not Match";
-  errorMsg:string;
-  gender: any;
-  loader = false;
-  show: boolean = false;
-  repeatshow: boolean = false;
+  showPassword: boolean = false;
+  showRepeatPassword: boolean = false;
+  isPasswordMismatch: boolean = false;
+  loader: boolean = false;
+  errorMsg: string;
+  message = "Password Did Not Match";
 
   constructor(
     private router: Router,
-    private Service: Service,
+    private service: Service,
     private fb: FormBuilder
   ) { }
 
   ngOnInit() {
-    this.password = '';
     this.form = this.fb.group({
-      fname: [null, Validators.compose([Validators.required, Validators.minLength(3),Validators.pattern('^[a-zA-Z ]*$') ])],
-      lname: [null, Validators.compose([Validators.required, Validators.minLength(3),Validators.pattern('^[a-zA-Z ]*$') ])],
-      emailid: [null, Validators.compose([Validators.required, Validators.email,Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')])],
-      password: [null, Validators.compose([Validators.required, Validators.minLength(6)])],
-      rpassword: [null, Validators.compose([Validators.required, Validators.minLength(6)])],   
-      Contactnumber: [null, Validators.compose([Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")])],
+      firstName: [null, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]*$')]],
+      lastName: [null, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-Z ]*$')]],
+      emailId: [null, [Validators.required, Validators.email, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]],
+      password: [null, [Validators.required, Validators.minLength(6)]],
+      repeatPassword: [null, [Validators.required, Validators.minLength(6)]],
+      contactNumber: [null, [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")]],
       gender: ['', Validators.required]
-
     });
   }
 
-  passwords() {
-    this.show = !this.show;
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
-  repeatpasswords() {
-    this.repeatshow = !this.repeatshow;
-  }
-  passwordMatch(){
-    
-    if(this.password === this.repassword){
-      this.isCheked = false;
-    }
-    else {
-      this.isCheked = true;
-      this.errorMsg = this.message;
-    }
-    
+  toggleRepeatPasswordVisibility() {
+    this.showRepeatPassword = !this.showRepeatPassword;
   }
 
-  chooseGender(){
-    console.log(this.gender);    
+  checkPasswordMatch() {
+    const password = this.form.get('password').value;
+    const repeatPassword = this.form.get('repeatPassword').value;
+    this.isPasswordMismatch = password !== repeatPassword;
+    this.errorMsg = this.isPasswordMismatch ? this.message : '';
   }
 
-  onClick() {
-    if (this.password === 'password') {
-      this.password = 'text';
-      this.show = true;
-    } else {
-      this.password = 'password';
-      this.show = false;
-    }
-  }
- //add user
+
+
+//create new user 
   addUser() {
-    this.loader = true; 
-    let data = {
-      "fname": this.firstName,
-      "lname": this.lastName,
-      "emailid": this.emailId,
-      "password": this.password,
-      "contactno": this.contactNumber,
-      "createdby": this.loginId,
-      "parentid":"0",
-      "relationship":"self",
-      "gender":this.gender
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
     }
+    
+    this.loader = true;
+    
+    const formData = this.form.value;
+    const data = {
+      fname: formData.firstName,
+      lname: formData.lastName,
+      emailid: formData.emailId,
+      password: formData.password,
+      contactno: formData.contactNumber,
+      createdby: this.loginId,
+      parentid: "0",
+      relationship: "self",
+      gender: formData.gender
+    };
 
-    this.Service.postMethod('users/create', JSON.stringify(data))
-      .subscribe((response => {
-        if (response.error == false) {
-          var message = response.data.fname + ' ' + response.data.lname + ' has been added successfully';
-          Swal.fire(
-            message,
-            'success'
-          ) 
-          this.loader = false; 
-          this.router.navigate(['/dashboard/users']);
-        }else{
-          Swal.fire(
-            response.message,
-            'error'
-          ) 
-          this.loader = false;
-        }
-      }),
-        (error) => {
-          this.loader = false; 
-          console.log(error);
-        }
-      )
+    this.service.postMethod('users/create', JSON.stringify(data)).subscribe(response => {
+      this.loader = false;
+      if (!response.error) {
+        const message = `${response.data.fname} ${response.data.lname} has been added successfully`;
+        Swal.fire(message, 'success');
+        this.router.navigate(['/dashboard/users']);
+      } else {
+        Swal.fire(response.message, 'error');
+      }
+    }, error => {
+      this.loader = false;
+      console.error(error);
+    });
   }
-
 }
