@@ -9,3 +9,5 @@ export class AppPage {
     return element(by.css('app-root h1')).getText() as Promise<string>;
   }
 }
+
+
